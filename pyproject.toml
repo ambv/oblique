@@ -1,9 +1,10 @@
 [tool.poetry]
 name = "oblique"
-version = "22.2.0"
+version = "22.2.1"
 description = "Show koans from Oblique Strategies"
 authors = ["Łukasz Langa <lukasz@langa.pl>"]
 license = "BSD-3-Clause"
+readme = "README.md"
 homepage = "https://github.com/ambv/oblique"
 include = ["oblique/strategies.ini"]
 

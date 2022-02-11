@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-__version__ = "22.2.0"
+__version__ = "22.2.1"
 
 from configparser import ConfigParser
 from pathlib import Path
