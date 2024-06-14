@@ -71,7 +71,7 @@ def main(
     strategies = get_strategies(include_editions, python=python, extra=extra)
 
     try:
-        for koan in random.sample(strategies, count):
+        for koan in random.sample(list(strategies), count):
             print(koan)
     except ValueError as ve:
         print(
