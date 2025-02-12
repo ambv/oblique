@@ -13,36 +13,51 @@ import click
 CURRENT_DIR = Path(__file__).parent
 
 
+DEFAULT_EDITION = "1,2,3,4"
+DEFAULT_COUNT = 3
+DEFAULT_EXTRA = False
+DEFAULT_PYTHON = False
+
+
 @click.command()
 @click.version_option(__version__)
 @click.option(
     "--edition",
-    default="1,2,3,4",
+    default=DEFAULT_EDITION,
     help="Which OS editions to include?",
     show_default=True,
 )
 @click.option(
     "--extra",
     is_flag=True,
-    default=False,
+    default=DEFAULT_EXTRA,
     help="Include additional koans found online",
     show_default=True,
 )
 @click.option(
     "--python",
     is_flag=True,
-    default=False,
+    default=DEFAULT_PYTHON,
     help="Include Monty Python quotes",
     show_default=True,
 )
 @click.option(
     "--count",
-    default=3,
+    default=DEFAULT_COUNT,
     type=int,
     help="How many koans to show",
     show_default=True,
 )
-def main(edition: str, count: int, extra: bool, python: bool) -> None:
+def main_command(edition: str, count: int, extra: bool, python: bool) -> None:
+    return main(edition, count, extra, python)
+
+
+def main(
+    edition: str = DEFAULT_EDITION,
+    count: int = DEFAULT_COUNT,
+    extra: bool = DEFAULT_EXTRA,
+    python: bool = DEFAULT_PYTHON,
+) -> None:
     include_editions: set[int] = set()
     for value in edition.split(","):
         if not value:
@@ -56,7 +71,7 @@ def main(edition: str, count: int, extra: bool, python: bool) -> None:
     strategies = get_strategies(include_editions, python=python, extra=extra)
 
     try:
-        for koan in random.sample(strategies, count):
+        for koan in random.sample(list(strategies), count):
             print(koan)
     except ValueError as ve:
         print(
