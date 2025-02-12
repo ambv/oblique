@@ -22,6 +22,15 @@ Do something sudden, destructive and unpredictable
 Move towards the unimportant
 ```
 
+## Change Log
+
+### 25.1.0
+- Fixed Python 3.10+ incompatibility with `random.sample`. Patch by Hugo
+  van Kemenade.
+
+### 22.2.0
+- Initial version.
+
 ## License
 
 Code is BSD-3 licensed. Koans attributed to Brian Eno and Peter Schmidt. 
