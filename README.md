@@ -14,6 +14,9 @@ Options:
   --extra          Include additional koans found online  [default: False]
   --python         Include Monty Python quotes  [default: False]
   --count INTEGER  How many koans to show  [default: 3]
+  --of-the-day     Show one koan from the set chosen for today by a
+                   reproducible pseudo-random algorithm. If set, --count is
+                   ignored.
   --help           Show this message and exit.
 
 ❯ oblique
@@ -23,6 +26,10 @@ Move towards the unimportant
 ```
 
 ## Change Log
+
+### 25.2.0
+- Introduced the `--of-the-day` parameter.
+- Now requires Python 3.9+.
 
 ### 25.1.0
 - Fixed Python 3.10+ incompatibility with `random.sample`. Patch by Hugo

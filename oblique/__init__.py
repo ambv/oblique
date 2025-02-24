@@ -1,8 +1,9 @@
 from __future__ import annotations
 
-__version__ = "22.2.1"
+__version__ = "25.2.0"
 
 from configparser import ConfigParser
+import datetime
 from pathlib import Path
 import random
 import sys
@@ -48,8 +49,20 @@ DEFAULT_PYTHON = False
     help="How many koans to show",
     show_default=True,
 )
-def main_command(edition: str, count: int, extra: bool, python: bool) -> None:
-    return main(edition, count, extra, python)
+@click.option(
+    "--of-the-day",
+    is_flag=True,
+    show_default=True,
+    default=False,
+    help=(
+        "Show one koan from the set chosen for today by a reproducible pseudo-random"
+        " algorithm. If set, --count is ignored."
+    ),
+)
+def main_command(
+    edition: str, count: int, extra: bool, python: bool, of_the_day: bool
+) -> None:
+    return main(edition, count, extra, python, of_the_day)
 
 
 def main(
@@ -57,6 +70,7 @@ def main(
     count: int = DEFAULT_COUNT,
     extra: bool = DEFAULT_EXTRA,
     python: bool = DEFAULT_PYTHON,
+    of_the_day: bool = False,
 ) -> None:
     include_editions: set[int] = set()
     for value in edition.split(","):
@@ -69,6 +83,10 @@ def main(
             continue
 
     strategies = get_strategies(include_editions, python=python, extra=extra)
+
+    if of_the_day:
+        print(koan_of_the_day(strategies))
+        return
 
     try:
         for koan in random.sample(list(strategies), count):
@@ -108,3 +126,15 @@ def get_strategies(
         strategies.update(lines)
 
     return strategies
+
+
+def koan_of_the_day(strategies: set[str], date: datetime.date | None = None) -> str:
+    rand = random.Random()
+    rand.seed(44)
+    s = sorted(strategies)
+    rand.shuffle(s)
+
+    if date is None:
+        date = datetime.date.today()
+    days_since_birth = (date - datetime.date(1985, 3, 7)).days
+    return s[days_since_birth % len(s)]
