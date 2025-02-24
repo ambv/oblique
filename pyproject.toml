@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "oblique"
-version = "25.1.0"
+version = "25.2.0"  # also update oblique/__init__.py
 description = "Show koans from Oblique Strategies"
 authors = ["Łukasz Langa <lukasz@langa.pl>"]
 license = "BSD-3-Clause"
@@ -9,17 +9,16 @@ homepage = "https://github.com/ambv/oblique"
 include = ["oblique/strategies.ini"]
 
 [tool.poetry.scripts]
-oblique = 'oblique:main'
+oblique = 'oblique:main_command'
 
 [tool.poetry.dependencies]
-python = ">=3.7"
-click = "^8.0.3"
+python = ">=3.9"
+click = "^8.1.8"
 
-[tool.poetry.dev-dependencies]
-pytest = "^5.2"
-black = "^22.1.0"
-flake8-bugbear = "^22.1.11"
-mypy = "^0.931"
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.4"
+black = "^25.1.0"
+mypy = "^1.15.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
