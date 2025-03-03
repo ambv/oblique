@@ -13,10 +13,11 @@ Options:
   --edition TEXT   Which OS editions to include?  [default: 1,2,3,4]
   --extra          Include additional koans found online  [default: False]
   --python         Include Monty Python quotes  [default: False]
+  --five-rings     Include quotes from 'The Book of Five Rings'  [default: False]
   --count INTEGER  How many koans to show  [default: 3]
   --of-the-day     Show one koan from the set chosen for today by a
                    reproducible pseudo-random algorithm. If set, --count is
-                   ignored.
+                   ignored.  [default: False]
   --help           Show this message and exit.
 
 ❯ oblique
@@ -26,6 +27,9 @@ Move towards the unimportant
 ```
 
 ## Change Log
+
+## 25.3.0
+- Added quotes from "The Book of Five Rings".
 
 ## 25.2.1
 - No functional changes, build system replaced with Setuptools on uv.

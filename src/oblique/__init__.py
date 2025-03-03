@@ -23,6 +23,7 @@ DEFAULT_EDITION = "1,2,3,4"
 DEFAULT_COUNT = 3
 DEFAULT_EXTRA = False
 DEFAULT_PYTHON = False
+DEFAULT_FIVE_RINGS = False
 
 
 @click.command()
@@ -48,6 +49,13 @@ DEFAULT_PYTHON = False
     show_default=True,
 )
 @click.option(
+    "--five-rings",
+    is_flag=True,
+    default=DEFAULT_FIVE_RINGS,
+    help="Include quotes from 'The Book of Five Rings'",
+    show_default=True,
+)
+@click.option(
     "--count",
     default=DEFAULT_COUNT,
     type=int,
@@ -65,9 +73,14 @@ DEFAULT_PYTHON = False
     ),
 )
 def main_command(
-    edition: str, count: int, extra: bool, python: bool, of_the_day: bool
+    edition: str,
+    count: int,
+    extra: bool,
+    python: bool,
+    five_rings: bool,
+    of_the_day: bool,
 ) -> None:
-    return main(edition, count, extra, python, of_the_day)
+    return main(edition, count, extra, python, five_rings, of_the_day)
 
 
 def main(
@@ -75,6 +88,7 @@ def main(
     count: int = DEFAULT_COUNT,
     extra: bool = DEFAULT_EXTRA,
     python: bool = DEFAULT_PYTHON,
+    five_rings: bool = DEFAULT_FIVE_RINGS,
     of_the_day: bool = False,
 ) -> None:
     include_editions: set[int] = set()
@@ -87,7 +101,9 @@ def main(
             print(f"warning: invalid edition {value}", file=sys.stderr)
             continue
 
-    strategies = get_strategies(include_editions, python=python, extra=extra)
+    strategies = get_strategies(
+        include_editions, python=python, extra=extra, five_rings=five_rings
+    )
 
     if of_the_day:
         print(koan_of_the_day(strategies))
@@ -104,14 +120,26 @@ def main(
 
 
 def get_strategies(
-    editions: set[int], *, extra: bool = False, python: bool = False
+    editions: set[int],
+    *,
+    extra: bool = False,
+    python: bool = False,
+    five_rings: bool = False,
 ) -> set[str]:
-    cfg = ConfigParser(interpolation=None, empty_lines_in_values=False)
+    cfg = ConfigParser(
+        delimiters=["="],
+        comment_prefixes=["#"],
+        interpolation=None,
+        empty_lines_in_values=False,
+    )
     cfg.read(CURRENT_DIR / "strategies.ini")
     sect = cfg["strategies"]
 
     if not extra:
         del sect["extra"]
+
+    if not five_rings:
+        del sect["the book of five rings"]
 
     if not python:
         keys_to_delete = [key for key in sect if key.startswith("monty python")]
