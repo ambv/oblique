@@ -1,25 +1,40 @@
-[tool.poetry]
+[project]
 name = "oblique"
-version = "25.2.0"  # also update oblique/__init__.py
 description = "Show koans from Oblique Strategies"
-authors = ["Łukasz Langa <lukasz@langa.pl>"]
-license = "BSD-3-Clause"
+authors = [
+    {name = "Łukasz Langa", email="lukasz@langa.pl"},
+]
+license = {text = "BSD-3-Clause"}
 readme = "README.md"
-homepage = "https://github.com/ambv/oblique"
-include = ["oblique/strategies.ini"]
+requires-python = ">=3.9"
+dependencies = [
+    "click>=8.1.8",
+]
+keywords = ["oblique strategies", "brian eno", "fortune"]
+dynamic = ["version"]
 
-[tool.poetry.scripts]
+[project.scripts]
 oblique = 'oblique:main_command'
 
-[tool.poetry.dependencies]
-python = ">=3.9"
-click = "^8.1.8"
+[project.urls]
+Homepage = "https://github.com/ambv/oblique"
 
-[tool.poetry.group.dev.dependencies]
-pytest = "^8.3.4"
-black = "^25.1.0"
-mypy = "^1.15.0"
+[dependency-groups]
+dev = [
+    "black>=25.1.0",
+    "mypy>=1.15.0",
+    "pytest>=8.3.5",
+]
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["setuptools>=75.5", "setuptools-scm", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.package-data]
+oblique = ["*.ini"]
+
+[tool.setuptools_scm]
+tag_regex = "^(?P<version>v\\d+(?:\\.\\d+){0,2}[^\\+]*)(?:\\+.*)?$"
+
+[tool.uv]
+cache-keys = [{ git = { commit = true, tags = true } }]

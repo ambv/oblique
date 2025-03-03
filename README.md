@@ -27,6 +27,9 @@ Move towards the unimportant
 
 ## Change Log
 
+## 25.2.1
+- No functional changes, build system replaced with Setuptools on uv.
+
 ### 25.2.0
 - Introduced the `--of-the-day` parameter.
 - Now requires Python 3.9+.

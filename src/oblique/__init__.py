@@ -1,14 +1,19 @@
 from __future__ import annotations
 
-__version__ = "25.2.0"
-
 from configparser import ConfigParser
 import datetime
+from importlib import metadata
 from pathlib import Path
 import random
 import sys
 
 import click
+
+
+try:
+    __version__ = metadata.version("oblique")
+except metadata.PackageNotFoundError:
+    __version__ = "unknown"
 
 
 CURRENT_DIR = Path(__file__).parent
