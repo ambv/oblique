@@ -18,6 +18,8 @@ Options:
   --of-the-day     Show one koan from the set chosen for today by a
                    reproducible pseudo-random algorithm. If set, --count is
                    ignored.  [default: False]
+  --attribution    Append attribution to the printed out koan(s).
+                   [default: False]
   --help           Show this message and exit.
 
 ❯ oblique
@@ -30,6 +32,7 @@ Move towards the unimportant
 
 ## 25.3.0
 - Added quotes from "The Book of Five Rings".
+- Introduced the `--attribution` parameter.
 
 ## 25.2.1
 - No functional changes, build system replaced with Setuptools on uv.

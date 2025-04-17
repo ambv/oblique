@@ -5,6 +5,7 @@ import datetime
 from importlib import metadata
 from pathlib import Path
 import random
+import re
 import sys
 
 import click
@@ -18,12 +19,13 @@ except metadata.PackageNotFoundError:
 
 CURRENT_DIR = Path(__file__).parent
 
-
 DEFAULT_EDITION = "1,2,3,4"
 DEFAULT_COUNT = 3
 DEFAULT_EXTRA = False
 DEFAULT_PYTHON = False
 DEFAULT_FIVE_RINGS = False
+
+EDITION_RE = re.compile(r"^Edition (?P<ed>\d+)$")
 
 
 @click.command()
@@ -72,6 +74,15 @@ DEFAULT_FIVE_RINGS = False
         " algorithm. If set, --count is ignored."
     ),
 )
+@click.option(
+    "--attribution",
+    is_flag=True,
+    show_default=True,
+    default=False,
+    help=(
+        "Append attribution to the printed out koan(s)."
+    ),
+)
 def main_command(
     edition: str,
     count: int,
@@ -79,8 +90,9 @@ def main_command(
     python: bool,
     five_rings: bool,
     of_the_day: bool,
+    attribution: bool,
 ) -> None:
-    return main(edition, count, extra, python, five_rings, of_the_day)
+    return main(edition, count, extra, python, five_rings, of_the_day, attribution)
 
 
 def main(
@@ -90,6 +102,7 @@ def main(
     python: bool = DEFAULT_PYTHON,
     five_rings: bool = DEFAULT_FIVE_RINGS,
     of_the_day: bool = False,
+    attribution: bool = False,
 ) -> None:
     include_editions: set[int] = set()
     for value in edition.split(","):
@@ -102,7 +115,11 @@ def main(
             continue
 
     strategies = get_strategies(
-        include_editions, python=python, extra=extra, five_rings=five_rings
+        include_editions,
+        python=python,
+        extra=extra,
+        five_rings=five_rings,
+        attribution=attribution,
     )
 
     if of_the_day:
@@ -110,8 +127,13 @@ def main(
         return
 
     try:
-        for koan in random.sample(list(strategies), count):
+        extra_nl = [""] * count
+        if attribution:
+            extra_nl = ["\n"] * (count - 1)
+            extra_nl.append("")
+        for koan, nl in zip(random.sample(list(strategies), count), extra_nl):
             print(koan)
+            print(end=nl)
     except ValueError as ve:
         print(
             f"note: no koans to show ({len(strategies)} selected): {ve}",
@@ -125,6 +147,7 @@ def get_strategies(
     extra: bool = False,
     python: bool = False,
     five_rings: bool = False,
+    attribution: bool = False,
 ) -> set[str]:
     cfg = ConfigParser(
         delimiters=["="],
@@ -132,33 +155,42 @@ def get_strategies(
         interpolation=None,
         empty_lines_in_values=False,
     )
+    cfg.optionxform = lambda option: option  # type: ignore[method-assign]
     cfg.read(CURRENT_DIR / "strategies.ini")
     sect = cfg["strategies"]
 
     if not extra:
-        del sect["extra"]
+        del sect["Extra"]
 
     if not five_rings:
-        del sect["the book of five rings"]
+        del sect["The Book of Five Rings"]
 
     if not python:
-        keys_to_delete = [key for key in sect if key.startswith("monty python")]
+        keys_to_delete = [key for key in sect if key.startswith("Monty Python")]
         for key in keys_to_delete:
             del sect[key]
 
-    allow_editions = set(f"edition {i}" for i in editions)
+    allow_editions = set(f"Edition {i}" for i in editions)
     keys_to_delete = [
-        key for key in sect if key.startswith("edition ") and key not in allow_editions
+        key for key in sect if key.startswith("Edition ") and key not in allow_editions
     ]
     for key in keys_to_delete:
         del sect[key]
 
     strategies: set[str] = set()
-    for _author, values in sect.items():
+    strategies_with_attribution: set[str] = set()
+    for author, values in sect.items():
         lines = values.strip().splitlines()
-        strategies.update(lines)
+        if not attribution:
+            strategies.update(lines)
+            continue
 
-    return strategies
+        for line in lines:
+            if line not in strategies:
+                strategies_with_attribution.add(f"{line}\n  -- {author}")
+                strategies.add(line)
+
+    return strategies_with_attribution or strategies
 
 
 def koan_of_the_day(strategies: set[str], date: datetime.date | None = None) -> str:
