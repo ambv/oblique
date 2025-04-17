@@ -30,7 +30,7 @@ Move towards the unimportant
 
 ## Change Log
 
-## 25.3.0
+## 25.4.0
 - Added quotes from "The Book of Five Rings".
 - Introduced the `--attribution` parameter.
 
