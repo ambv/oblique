@@ -30,6 +30,11 @@ Move towards the unimportant
 
 ## Change Log
 
+## 25.5.0
+- Added quotes from "Monty Python's Life of Brian".
+- Fixed running with `python -m oblique`, which previously ignored
+  command-line arguments.
+
 ## 25.4.0
 - Added quotes from "The Book of Five Rings".
 - Introduced the `--attribution` parameter.
